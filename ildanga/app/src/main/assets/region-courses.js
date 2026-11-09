@@ -1,0 +1,3 @@
+// Upgrade only bundled example posts; preserve user-created routes.
+const regionalStops={d:['bread','park','art'],s:['banpo','seoulforest','namsan'],b:['haeundae','dalmaji','gwang'],j:['jejuBeach','jejuForest','jejuPark'],g:['gangBeach','gangLake','gangCoffee']};
+if(!state.regionPrep13){for(const [id,stops] of Object.entries(regionalStops)){const post=state.posts.find(p=>p.id===id&&!p.mine);if(post){const old=[...post.stops];post.stops=stops;if(state.source===id&&JSON.stringify(state.route)===JSON.stringify(old))state.route=[...stops]}}state.regionPrep13=true;persist();if(page==='home')home();}

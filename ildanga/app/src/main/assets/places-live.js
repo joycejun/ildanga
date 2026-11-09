@@ -1,0 +1,34 @@
+'use strict';
+const officialPlaces={
+ bread:{address:'대전광역시 중구 대종로480번길 15',phone:'1588-8069',hours:'매일 08:00–22:00 · 연중무휴',source:'https://sungsimdang.co.kr/31/15',placeUrl:'https://naver.me/FXZr5T27'},
+ park:{address:'대전 한밭수목원 · 동원/서원 구역 확인',hours:'11–3월: 입장 07:00–18:00 / 관람 19:00까지. 4–10월: 입장 05:00–20:00 / 관람 21:00까지. 동원 월요일·서원 화요일 정기 휴원.',source:'https://www.daejeon.go.kr/gar/contentsHtmlView.do?menuSeq=8024',placeUrl:'https://www.daejeon.go.kr/gar/index.do'},
+ station:{name:'성심당 대전역점',address:'대전광역시 동구 중앙로 215',phone:'1588-8069',hours:'매일 07:00–22:30 · 연중무휴',source:'https://sungsimdang.co.kr/31/19',placeUrl:'https://naver.me/5ncPlUvl'},
+ lotte:{name:'성심당 롯데백화점 대전점',address:'대전광역시 서구 계룡로 598',phone:'1588-8069',hours:'성심당·케익부띠끄 08:00–22:00 / 휴무는 별도 확인',source:'https://sungsimdang.co.kr/31/18',placeUrl:'https://naver.me/FWJfI5a3'}
+};
+let liveCandidates=[],placeRequest=0,placeController=null;
+function safePlaceUrl(url){try{const u=new URL(url);return u.protocol==='https:'?u.href:''}catch(e){return ''}}
+function openPlaceUrl(url){const safe=safePlaceUrl(url);if(safe)external(safe);else toast('유효한 장소 링크가 없어요')}
+function mapSearch(k,suffix=''){const p=places[k];openPlaceUrl('https://map.kakao.com/link/search/'+encodeURIComponent(p.region+' '+p.name+suffix))}
+function officialStatus(k,date=new Date()){
+ if(k!=='park')return officialPlaces[k]?'공식 운영시간 안내':'영업 여부 확인 필요';
+ const day=new Intl.DateTimeFormat('en-US',{weekday:'short',timeZone:'Asia/Seoul'}).format(date);
+ return day==='Mon'?'월요일 · 동원 정기 휴원일':day==='Tue'?'화요일 · 서원 정기 휴원일':'구역별 운영시간 확인';
+}
+function factsHtml(k){const p=places[k],info=officialPlaces[k]||p;
+ return `<div class="placefacts">${info.address?`<p>${esc(info.address)}</p>`:''}${info.phone?`<p>전화 ${esc(info.phone)}</p>`:''}</div>`;
+}
+function hoursInfo(k){const info=officialPlaces[k];modal(`<h2>${esc(places[k].name)} · 영업정보</h2>${info?`<p class="hours">${esc(officialStatus(k))}</p><div class="placefacts"><p>${esc(info.hours)}</p></div><p>공식 사이트 안내 기준입니다. 임시휴무·공휴일 예외·시설별 통제 여부는 공식 공지를 확인해 주세요.</p><p class="officialsource">출처: ${k==='park'?'대전광역시 한밭수목원':'성심당 공식 홈페이지'} · 확인일 2026-11-09</p><button class="primary" onclick="openPlaceUrl('${info.source}')">공식 최신 안내 열기 ↗</button>`:`<p>장소 검색 API는 영업시간을 제공하지 않습니다. 지도 장소 페이지에서 최신 정보를 확인해 주세요.</p><button class="primary" onclick="placeDetails('${k}')">지도에서 영업정보 확인 ↗</button>`}`)}
+function placeDetails(k){const p=places[k],u=officialPlaces[k]?.placeUrl||p.placeUrl;if(u)openPlaceUrl(u);else mapSearch(k)}
+// Real place data and demo reviews are never mixed.
+detailHtml=function(k){const p=places[k],info=officialPlaces[k];return `<div class="detail-scroll"><div class="detailheading"><div><h2>${esc(p.name)}</h2><p>${esc(p.cat)} · ${selectedStop+1}번째 방문</p></div><button class="hours" onclick="hoursInfo('${k}')">${esc(officialStatus(k))} ↗</button></div>${factsHtml(k)}${info?`<div class="officialblock"><p>${esc(info.hours)}</p><p class="officialsource">공식 안내 · 2026-11-09 확인 / 실시간 아님</p></div>`:''}<section class="reviewbox"><h3>✦ 후기 요약</h3><p class="reviewline">아직 연결된 실제 후기가 없어요.</p><p class="muted">장소 페이지에서 원문 후기를 확인할 수 있어요.</p><button class="link" onclick="placeDetails('${k}')">장소 페이지에서 후기 보기 ↗</button></section></div><div class="detailactions"><button onclick="alternatives('${k}')">↻ 다른 ${esc(p.cat==='빵집'?'빵집':p.cat==='카페'?'카페':'장소')} 찾기</button><button onclick="hoursInfo('${k}')">영업정보</button><button onclick="placeDetails('${k}')">장소정보 ↗</button></div>`};
+function alternatives(k){if(placeController)placeController.abort();placeRequest++;liveCandidates=[];const p=places[k];modal(`<h2>가까운 ${esc(p.cat==='빵집'?'다른 빵집':p.cat)} 찾기</h2><p>${esc(p.name)} 기준 직선 5km · 거리순</p><div class="row" style="margin:12px 0"><button class="primary" onclick="loadNearby('${k}','${p.cat==='빵집'?'빵집':p.cat}')">주변 검색</button>${p.cat==='빵집'?`<button onclick="loadNearby('${k}','성심당')">성심당 분점</button>`:''}</div><div id="nearbyResults"><p>검색 버튼을 누르면 실제 장소를 조회해요.</p></div><p class="providerlabel">검색 제공: Kakao · 거리순이며 인기 순위는 아닙니다.</p>${p.cat==='빵집'?`<details><summary>API 연결 전에도 공식 분점 정보 보기</summary>${['station','lotte'].map(id=>`<article class="resultcard"><h3>${esc(officialPlaces[id].name)}</h3><p>${esc(officialPlaces[id].address)}</p><button onclick="openPlaceUrl('${officialPlaces[id].source}')">공식 영업정보 ↗</button><button onclick="openPlaceUrl('${officialPlaces[id].placeUrl}')">지도에서 확인 ↗</button></article>`).join('')}<p class="muted">공식 분점 목록입니다. 5km 검색 결과가 아니며 거리·좌표는 검색 후 확인합니다.</p></details>`:''}<button onclick="mapSearch('${k}',' 근처 ${p.cat==='빵집'?'빵집':p.cat}')">외부 지도에서 바로 검색 ↗</button>`)}
+async function loadNearby(k,term){if(placeController)placeController.abort();const controller=new AbortController();placeController=controller;const token=++placeRequest,gen=generation,p=places[k];liveCandidates=[];$('#nearbyResults').innerHTML='<p role="status">실제 장소를 찾고 있어요…</p>';const timer=setTimeout(()=>controller.abort(),18000);
+ try{const params=new URLSearchParams({query:term,lat:p.lat,lng:p.lng,radius:'5000'});const res=await fetch('/api/places/search?'+params,{signal:controller.signal});const data=await res.json();if(!res.ok)throw Error(data.error||'장소 검색 서버를 연결해 주세요.');if(token!==placeRequest||gen!==generation||!$('#modal').open||!$('#nearbyResults'))return;
+ liveCandidates=(data.places||[]).filter(x=>validCustomPlace(x.id,x)&&x.name!==p.name&&!state.route.includes(x.id)&&dist(p,x)<=5).map(x=>({...x,cat:p.cat,region:state.region}));
+ $('#nearbyResults').innerHTML=liveCandidates.length?liveCandidates.map((x,i)=>`<article class="resultcard"><h3>${esc(x.name)}</h3><p>직선 약 ${(x.distanceMeters/1000).toFixed(1)}km · ${esc(x.address)}</p><p>${esc(x.phone||'전화번호 미제공')}</p><p class="muted">영업 여부는 장소 페이지에서 확인</p><div class="row"><button class="primary" onclick="replaceLive('${k}',${i})">이 장소로 바꾸기</button><button onclick="openCandidate(${i})">장소정보 ↗</button></div></article>`).join(''):'<p>5km 안에 교체할 검색 결과가 없어요. 검색어를 바꿔보세요.</p>';
+ }catch(e){if(token===placeRequest&&gen===generation&&$('#modal').open&&$('#nearbyResults'))$('#nearbyResults').innerHTML=`<p role="alert">${esc(e.name==='AbortError'?'검색 시간이 초과됐어요. 다시 시도해 주세요.':e.message)}</p><p>연결 방법은 프로젝트의 PLACE_CONNECTION.md를 확인하세요. 아래 외부 지도 검색은 서버 없이 사용할 수 있어요.</p>`;}finally{clearTimeout(timer)}}
+function openCandidate(i){const p=liveCandidates[i];if(p)openPlaceUrl(p.placeUrl)}
+function replaceLive(old,i){const p=liveCandidates[i],index=state.route.indexOf(old);if(!p||index<0||!validCustomPlace(p.id,p)||dist(places[old],p)>5)return;places[p.id]=p;state.customPlaces={...state.customPlaces,[p.id]:p};state.route[index]=p.id;selectedStop=index;persist();$('#modal').close();go('route');toast('실제 장소로 바꾸고 경로를 다시 계산했어요')}
+// Remove fictional bakery choices from the previous demo; existing saved routes retain labels.
+nearAlternatives=function(){return []};replaceStop=function(){toast('실제 주변 검색에서 장소를 선택해 주세요')};
+if(page==='route')go('route');
