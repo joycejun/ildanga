@@ -57,7 +57,7 @@
 ## 확인한 것과 못 한 것
 
 - 브라우저(Chromium)에서 화면 흐름, 내 주변 코스 정렬, 서버 없는 모드, 주행 모드 전환을 모의 응답으로 확인했습니다.
-- 실제 PLEOS 에뮬레이터에서의 FusedLocation 위치 수신, CarUxRestrictions 실제 신호, Back 하드키 동작, release APK 동작은 **(에뮬레이터에서 확인한 항목만 여기에 ✔ 로 갱신)**.
+- 실제 PLEOS 에뮬레이터에서의 FusedLocation 위치 수신, CarUxRestrictions 실제 신호, Back 하드키 동작, release APK 동작은 (release APK를 에뮬레이터에 설치해 실행하고, 서버 없이 "예시 데이터 모드"로 동작하는 것과 "내 주변 코스"가 기기 위치로 동작하는 것을 확인했습니다. Pleos FusedLocation 위치 수신, CarUxRestrictions 실제 신호, Back 하드키 동작은 아직 확인하지 못했습니다.)
 - 길안내 경로(OSRM)는 교통·체류시간을 반영하지 않은 예상 값입니다.
 
 ## 콘텐츠와 라이선스

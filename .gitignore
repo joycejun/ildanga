@@ -9,3 +9,5 @@ __pycache__/
 *.keystore
 .env
 server/review_cache/
+
+ildanga/app/release/
