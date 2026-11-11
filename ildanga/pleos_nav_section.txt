@@ -1,0 +1,102 @@
+ private NaviHelper naviHelper;
+ private boolean naviReady=false;
+ private org.json.JSONObject queuedRoute=null;
+ private final android.os.Handler navHandler=new android.os.Handler(android.os.Looper.getMainLooper());
+ private void navigationFeedback(String status,String message){android.util.Log.i("ILDANGA_NAV",status+": "+message);runOnUiThread(()->{if(web!=null)web.evaluateJavascript("window.onIldangaNavigationResult("+org.json.JSONObject.quote(status)+","+org.json.JSONObject.quote(message)+")",null);});}
+ private void initNavigation(){try{naviHelper=new NaviHelper(getApplicationContext());naviHelper.initialize(()->{runOnUiThread(()->{naviReady=true;if(queuedRoute!=null){org.json.JSONObject request=queuedRoute;queuedRoute=null;sendNavigationRoute(request);}});return Unit.INSTANCE;},error->{runOnUiThread(()->{naviReady=false;queuedRoute=null;navigationFeedback("error","PLEOS 내비게이션 서비스 연결에 실패했어요.");});return Unit.INSTANCE;});}catch(Exception e){navigationFeedback("error","NaviHelper를 초기화할 수 없어요.");}}
+ private static String cleanPoiId(org.json.JSONObject p){
+  String id=p.optString("poiId", "").trim();
+  return "null".equalsIgnoreCase(id)?"":id;
+ }
+ // PLEOS identifiers must be provided by a trusted PLEOS POI source.
+ // Latitude/longitude or Kakao/Google place IDs are NOT interchangeable with PLEOS poiId.
+ private boolean hasPleosPoiIds(List<org.json.JSONObject> points){
+  for(org.json.JSONObject p:points)if(cleanPoiId(p).isEmpty())return false;
+  return true;
+ }
+ // PLEOS NaviHelper requires POI identities supplied by its supported place service.
+ // Never replace missing ids with fake strings or silently launch an unrelated map app.
+ private void reportMissingPoiId(List<org.json.JSONObject> points){
+  StringBuilder missing=new StringBuilder();
+  for(org.json.JSONObject p:points){
+   if(cleanPoiId(p).isEmpty()){
+    if(missing.length()>0)missing.append(", ");
+    missing.append(p.optString("name","이름 없는 장소"));
+   }
+  }
+  navigationFeedback("error","PLEOS 장소 ID가 없어 직접 길안내할 수 없어요: " + missing + ". 아래 'PLEOS SDK 연결 테스트'로 공식 예제 경로를 먼저 확인해 주세요.");
+ }
+ // Diagnostic route: two real POI IDs published in the Pleos Playground NaviHelper examples.
+ // It is deliberately separate from the user's selected trip.
+ private void testOfficialPleosRoute(){
+  try{
+   org.json.JSONObject route=new org.json.JSONObject();
+   org.json.JSONArray stops=new org.json.JSONArray();
+   org.json.JSONObject way=new org.json.JSONObject();
+   way.put("name","판교 현대백화점 (공식 SDK 예제)");
+   way.put("latitude",37.41275833);way.put("longitude",127.09481944);
+   way.put("poiId","36khp2hdj2cfcm5nqhe3");
+   way.put("poiSubId","0");
+   way.put("address","6 Changup-ro 0beon-gil, Sujeong-gu, Seongnam-si, Gyeonggi-do");
+   stops.put(way);
+   org.json.JSONObject dest=new org.json.JSONObject();
+   dest.put("name","42dot (공식 SDK 예제)");
+   dest.put("latitude",37.48544722);dest.put("longitude",127.03636666);
+   dest.put("poiId","36khp37hh8gqcm5nqhe5");
+   dest.put("poiSubId","0");
+   dest.put("address","2621 Nambusunhwan-ro, Gangnam-gu, Seoul");
+   stops.put(dest);route.put("stops",stops);
+   navigationFeedback("pending","PLEOS 공식 예제 경로를 요청합니다 (판교 현대백화점 → 42dot). 실제 안내 여부를 확인해 주세요.");
+   sendNavigationRoute(route);
+  }catch(Exception e){navigationFeedback("error","SDK 예제 경로 구성 실패: "+e.getMessage());}
+ }
+ private void sendNavigationRoute(org.json.JSONObject route){
+  try{
+   org.json.JSONArray stops=route.getJSONArray("stops");
+   if(stops.length()<1||stops.length()>6)throw new IllegalArgumentException("1~6개 방문지까지 지원합니다.");
+   List<org.json.JSONObject> points=new ArrayList<>();
+   for(int i=0;i<stops.length();i++){
+    org.json.JSONObject p=stops.getJSONObject(i);
+    double lat=p.getDouble("latitude"),lng=p.getDouble("longitude");
+    if(!Double.isFinite(lat)||!Double.isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180)throw new IllegalArgumentException("좌표 오류");
+    points.add(p);
+   }
+   // Trial only: 3.0.5 Java constructor accepts a non-null POI id. For coordinates
+   // lacking a provider POI id, submit an EMPTY string (not a fabricated POI id).
+   // Whether the Navigation service accepts this request is platform-dependent.
+   boolean coordinateTrial=!hasPleosPoiIds(points);
+   if(coordinateTrial)navigationFeedback("pending","POI ID가 없는 장소입니다. 좌표 기반 PLEOS 경로 요청을 시험합니다. 실패하면 코스 지도를 사용하세요.");
+   if(!naviReady||naviHelper==null){queuedRoute=route;navigationFeedback("pending","PLEOS 내비게이션 서비스 연결을 기다리고 있어요.");return;}
+   org.json.JSONObject last=points.get(points.size()-1);
+   RouteInfo destination=new RouteInfo(
+     last.getDouble("latitude"),last.getDouble("longitude"),null,null,
+     last.optString("name","목적지"),cleanPoiId(last),
+     last.optString("address",""),last.optString("poiSubId","0"),
+     ai.pleos.playground.navi.constants.RouteOption.RECOMMENDED,"",false);
+   if(points.size()==1){naviHelper.requestRoute(destination);}
+   else{
+    List<RequestWaypointInfo> waypoints=new ArrayList<>();
+    String[] positions={"FIRST","SECOND","THIRD","FOURTH","FIFTH"};
+    for(int i=0;i<points.size()-1;i++){
+     org.json.JSONObject p=points.get(i);
+     waypoints.add(new RequestWaypointInfo(
+       p.getDouble("latitude"),p.getDouble("longitude"),p.optString("name","경유지"),
+       WaypointIndex.valueOf(positions[i]),cleanPoiId(p),p.optString("address",""),
+       p.optString("poiSubId","0"),""));
+    }
+    naviHelper.requestRouteWithWaypoints(new RouteWithWaypointsRequest(destination,waypoints));
+   }
+   navHandler.postDelayed(()->{
+    try{
+     if(naviReady&&naviHelper!=null){
+      naviHelper.requestNavigationScreen(ai.pleos.playground.navi.data.NavigationScreenRequest.Foreground.INSTANCE);
+      navigationFeedback("requested","PLEOS에 경로 요청을 보냈습니다. 실제 경로 생성 여부는 내비게이션에서 확인하세요. 지도가 하얗다면 PLEOS 기본 지도 문제입니다.");
+     }
+    }catch(Exception e){navigationFeedback("error","경로 요청 후 내비게이션 화면 열기 실패: "+e.getMessage());}
+   },1500);
+  }catch(Exception e){navigationFeedback("error","경로 전달 실패: "+(e.getMessage()==null?e.getClass().getSimpleName():e.getMessage()));}
+ }
+ public class NavigationBridge {
+  @JavascriptInterface public void testSdkRoute(){runOnUiThread(()->testOfficialPleosRoute());}
+  @JavascriptInterface public void startRoute(String json){if(json==null||json.length()>6000)return;runOnUiThread(()->{try{sendNavigationRoute(new org.json.JSONObject(json));}catch(Exception e){navigationFeedback("error","잘못된 경로 데이터예요.");}});}
+ }

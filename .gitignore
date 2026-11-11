@@ -1,0 +1,11 @@
+
+*.bak
+local.properties
+.gradle/
+.idea/
+build/
+__pycache__/
+*.jks
+*.keystore
+.env
+server/review_cache/

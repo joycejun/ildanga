@@ -57,3 +57,46 @@ function launchDirections(){if(state.route.length>5)return toast('외부 지도�
 function backup(){modal('<h2>다른 기기로 루트 옮기기</h2><p class="muted">아래 JSON을 복사해 보관하고 새 기기에 붙여넣으세요. 가져오면 현재 저장 데이터를 교체합니다.</p><textarea id="backup" style="height:180px"></textarea><div class="row"><button onclick="document.querySelector(\'#backup\').select()">전체 선택</button><button class="primary" onclick="importBackup()">붙여넣은 백업 가져오기</button></div>');$('#backup').value=JSON.stringify(state)}
 function importBackup(){try{const x=JSON.parse($('#backup').value);const incoming=validatedCustomPlaces(x.customPlaces);const known={...places,...incoming};if(!Array.isArray(x.posts)||!x.route?.every(k=>known[k])||x.route.length<2||!Array.isArray(x.saved)||!Array.isArray(x.liked)||!x.comments||typeof x.comments!=='object'||!['대전','서울','부산','제주','강릉'].includes(x.region))throw Error();for(const p of x.posts){if(!/^[a-z0-9]+$/i.test(p.id)||typeof p.title!=='string'||typeof p.author!=='string'||!Array.isArray(p.stops)||p.stops.length<2||!p.stops.every(k=>known[k])||!Number.isFinite(p.likes))throw Error()}if(x.posts.length>500||x.route.length>12||!x.saved.every(id=>typeof id==='string')||!x.liked.every(id=>typeof id==='string')||!Object.entries(x.comments).every(([id,list])=>/^[a-z0-9]+$/i.test(id)&&Array.isArray(list)&&list.every(t=>typeof t==='string')))throw Error();if(!confirm('현재 데이터를 이 백업으로 교체할까요?'))return;Object.assign(places,incoming);state=x;persist();$('#modal').close();go('saved')}catch(e){toast('올바른 일단가 백업 데이터가 아니에요')}}
 setInterval(()=>$('#clock').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),1000);go('home');
+
+
+// Gleo Interface: structured route operations. Never treat chat-only commands as a Gleo callback.
+window.ildangaGleoDispatch=function(action,rawParams){
+ try {
+  const p=JSON.parse(rawParams||'{}');
+  if(!p||Array.isArray(p)||typeof p!=='object')throw Error('Invalid parameters');
+  if(action==='CREATE_TRAVEL_ROUTE'){
+   const region=String(p.region||'').trim();
+   const post=state.posts.find(x=>x.region===region&&Array.isArray(x.stops)&&x.stops.length>=2&&x.stops.every(k=>places[k]));
+   if(!post)return JSON.stringify({status:'fail',message:'No available travel route was found for that region.'});
+   state.route=[...post.stops];state.title=post.title;state.source=post.id;state.region=post.region;
+   persist();if($('#modal').open)$('#modal').close();go('route');
+   return JSON.stringify({status:'success',message:'The travel route for '+region+' is ready.'});
+  }
+  if(action==='EDIT_TRAVEL_ROUTE'){
+   if(!Array.isArray(state.route)||state.route.length<2)return JSON.stringify({status:'fail',message:'There is no editable travel route.'});
+   const operation=String(p.operation||'');let next=[...state.route];
+   if(operation==='reverse'){next.reverse()}
+   else if(operation==='swap'){
+    const first=Number(p.first),second=Number(p.second);
+    if(!Number.isInteger(first)||!Number.isInteger(second)||first<1||second<1||first>next.length||second>next.length||first===second)return JSON.stringify({status:'asking',message:'Two different valid stop numbers are required.'});
+    [next[first-1],next[second-1]]=[next[second-1],next[first-1]];
+   }else if(operation==='remove'){
+    const index=Number(p.first);
+    if(!Number.isInteger(index)||index<1||index>next.length||next.length<=2)return JSON.stringify({status:'asking',message:'A valid stop number is required and at least two stops must remain.'});
+    next.splice(index-1,1);
+   }else return JSON.stringify({status:'asking',message:'The operation must be reverse, swap, or remove.'});
+   state.route=next;persist();if($('#modal').open)$('#modal').close();go('route');
+   return JSON.stringify({status:'success',message:'The travel route has been updated.'});
+  }
+  if(action==='SAVE_TRAVEL_ROUTE'){
+   if(!Array.isArray(state.route)||state.route.length<2)return JSON.stringify({status:'fail',message:'There is no route to save.'});
+   const title=String(p.title||state.title||'My route').trim().slice(0,60);
+   if(!title)return JSON.stringify({status:'asking',message:'A route name is required.'});
+   const id='gleo'+Date.now();
+   state.posts.push({id,title,region:state.region,author:'나',desc:'Gleo에서 저장한 코스',stops:[...state.route],likes:0,tags:'내 루트',mine:true,private:true});
+   state.saved.push(id);persist();if($('#modal').open)$('#modal').close();go('saved');
+   return JSON.stringify({status:'success',message:'The travel route has been saved.'});
+  }
+  return JSON.stringify({status:'fail',message:'Unsupported action.'});
+ }catch(e){return JSON.stringify({status:'fail',message:'The travel request could not be processed.'});}
+};

@@ -6,3 +6,6 @@ android {
  defaultConfig { applicationId 'com.example.dateapp'; minSdk 28; targetSdk 34; versionCode 33; versionName '2.13-prepared-reviews'; buildConfigField 'String', 'PLACES_API_BASE', '"' + providers.gradleProperty('placesApiBase').getOrElse('http://127.0.0.1:8765') + '"' }
  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
+
+
+dependencies { implementation 'ai.pleos.playground:FusedLocation:1.1.3'; implementation 'ai.pleos.playground:NaviHelper:3.0.5' }

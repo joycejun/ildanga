@@ -1,0 +1,168 @@
+/* Ildanga Aurora Glass — presentation only; all handlers are kept. */
+html.ild-aurora{
+ --au-ink:#392c55;--au-muted:#6f6386;--au-violet:#8655e8;--au-violet2:#b47bef;--au-glass:rgba(255,249,255,.57);
+ --au-line:rgba(255,255,255,.79);--au-shadow:0 16px 50px rgba(40,30,93,.22);
+ color-scheme:light;
+}
+html.ild-aurora body{color:var(--au-ink)!important;background:#9683c2!important;font-family:Asta,'Noto Sans KR',system-ui,sans-serif!important}
+html.ild-aurora body .landscape{display:block!important;background:none!important;z-index:-1!important;overflow:hidden}
+html.ild-aurora .landscape::before{content:'';position:absolute;inset:-4%;background:url('photos/seoul.png') center 48%/cover no-repeat;filter:blur(13px) saturate(1.3);transform:scale(1.06)}
+html.ild-aurora .landscape::after{content:'';position:absolute;inset:0;background:linear-gradient(125deg,rgba(91,107,209,.64) 0%,rgba(142,111,213,.43) 41%,rgba(241,154,181,.45) 74%,rgba(251,184,158,.45)),linear-gradient(0deg,rgba(68,48,110,.38),transparent 75%)}
+html.ild-aurora .shell{max-width:none!important;padding:clamp(9px,1.35vw,24px)!important;min-height:100vh}
+html.ild-aurora header{min-height:56px;padding:6px 18px!important;margin:0 0 12px!important;background:rgba(248,243,255,.32)!important;border:1px solid rgba(255,255,255,.65)!important;border-radius:24px!important;box-shadow:0 8px 30px rgba(55,38,102,.16)!important;backdrop-filter:blur(24px) saturate(120%);display:flex;align-items:center}
+html.ild-aurora .brand{font-size:clamp(24px,2.55vw,37px)!important;letter-spacing:-1.5px!important;color:#fff!important;text-shadow:0 2px 14px rgba(35,21,87,.35);background:none!important;border:0!important;padding:0 8px!important;box-shadow:none!important}
+html.ild-aurora .aurora-brandmark{font-size:.75em;display:inline!important;color:#efe3ff;margin-left:6px}
+html.ild-aurora header nav{background:rgba(255,255,255,.42)!important;border:1px solid #ffffffa9!important;border-radius:100px!important;padding:4px!important;gap:3px!important;backdrop-filter:blur(14px)}
+html.ild-aurora header nav button{color:#574879!important;background:transparent!important;font-size:clamp(14px,1.45vw,21px)!important;font-weight:680;min-height:41px!important;padding:8px 17px!important;border-radius:100px!important}
+html.ild-aurora header nav button.active{background:linear-gradient(135deg,rgba(252,246,255,.97),rgba(238,222,255,.95))!important;color:#794bd4!important;box-shadow:0 3px 15px #6b438a22!important}
+html.ild-aurora #ildangaUnifiedSearch{display:none!important}
+html.ild-aurora button{transition:transform .14s,background-color .14s,box-shadow .14s}
+html.ild-aurora button:focus-visible,html.ild-aurora [role=button]:focus-visible{outline:3px solid #b590ff!important;outline-offset:2px}
+html.ild-aurora .aurora-hero{position:relative;display:grid;grid-template-columns:minmax(0,.89fr) minmax(0,1.11fr);gap:clamp(14px,2.8vw,42px);align-items:center;min-height:clamp(225px,43vh,420px);padding:clamp(18px,3vw,46px)!important;border:1px solid rgba(255,255,255,.86);border-radius:30px;background:linear-gradient(115deg,rgba(236,228,255,.50),rgba(251,226,250,.37) 60%,rgba(255,231,226,.48))!important;box-shadow:var(--au-shadow),inset 0 1px 0 rgba(255,255,255,.89);backdrop-filter:blur(22px) saturate(118%);overflow:hidden}
+html.ild-aurora .aurora-hero:before{content:'';position:absolute;pointer-events:none;right:-11%;top:-48%;height:180%;width:60%;background:radial-gradient(ellipse,rgba(243,191,238,.28),transparent 70%)}
+html.ild-aurora .aurora-hero-text,html.ild-aurora .aurora-search-card{position:relative;z-index:1;min-width:0}
+html.ild-aurora .aurora-intro{font-size:clamp(10px,1.1vw,15px);letter-spacing:2.1px;color:#f9f1ff;font-weight:800;text-shadow:0 1px 7px #59448e66}
+html.ild-aurora .aurora-intro span{font-size:18px;letter-spacing:0;color:#fff}
+html.ild-aurora .aurora-hero h1{font-size:clamp(31px,4.1vw,69px)!important;line-height:1.13!important;letter-spacing:-2.2px!important;font-weight:820!important;color:white!important;margin:12px 0 16px!important;text-shadow:0 3px 24px rgba(53,33,108,.36)}
+html.ild-aurora .aurora-hero h1 strong{font-weight:850;display:block}
+html.ild-aurora .aurora-hero-text>p{font-size:clamp(16px,1.8vw,26px);color:#fff!important;text-shadow:0 2px 12px rgba(60,35,120,.3);line-height:1.47!important;font-weight:520}
+html.ild-aurora .aurora-gleo{display:inline-flex;align-items:center;gap:12px;margin-top:clamp(13px,2.7vh,24px);padding:7px 19px 7px 7px;min-height:56px;border:1px solid white;border-radius:100px;background:rgba(255,250,255,.78)!important;color:#7040c4!important;font-size:clamp(16px,1.65vw,24px)!important;font-weight:820;box-shadow:0 8px 24px rgba(87,54,140,.22)}
+html.ild-aurora .aurora-gleo-orb{width:39px;height:39px;border-radius:100%;display:grid;place-items:center;color:white;background:linear-gradient(145deg,#a0a2f4,#ad70e8);box-shadow:inset 0 2px 1px #ffffff9e,0 3px 10px #775fbd44;font-size:23px}
+html.ild-aurora .aurora-search-card{border:1px solid rgba(255,255,255,.88);background:linear-gradient(135deg,rgba(255,255,255,.73),rgba(247,228,253,.62));border-radius:28px;padding:clamp(16px,2.35vw,32px);box-shadow:0 10px 33px rgba(65,39,107,.16),inset 0 1px #fff;backdrop-filter:blur(20px)}
+html.ild-aurora .aurora-sparkline{position:absolute;right:clamp(15px,2vw,28px);top:12px;font-size:37px;color:#b68af2}
+html.ild-aurora .aurora-search-title{font-size:clamp(22px,2.45vw,36px);font-weight:830;color:#4e3b78;letter-spacing:-.7px;margin:0 0 5px}
+html.ild-aurora .aurora-search-sub{font-size:clamp(13px,1.3vw,19px);color:#79698d;margin:0 0 21px}
+html.ild-aurora .aurora-search-form{display:flex;align-items:center;gap:10px;padding:7px;border:1px solid #fff;background:rgba(255,255,255,.8);border-radius:100px;box-shadow:0 7px 24px #6541931b}
+html.ild-aurora .aurora-search-form>span{margin:0 4px 0 11px;font-size:31px;line-height:1;color:#8874ad}
+html.ild-aurora .aurora-search-form input{min-width:0;flex:1;width:auto!important;border:0!important;box-shadow:none!important;background:transparent!important;font-size:clamp(14px,1.45vw,22px)!important;min-height:44px!important;padding:5px!important;color:#44385f}
+html.ild-aurora .aurora-search-form button{background:linear-gradient(115deg,#7871e8,#b16aed)!important;border:1px solid #d7bdff!important;border-radius:100px!important;color:#fff!important;padding:9px 19px!important;font-size:clamp(14px,1.4vw,21px)!important;min-height:48px!important;font-weight:800;white-space:nowrap;box-shadow:0 6px 15px #8352c84a}
+html.ild-aurora .aurora-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+html.ild-aurora .aurora-tags button{min-height:40px;padding:7px 13px;font-size:clamp(12px,1.15vw,18px)!important;color:#60487e!important;background:rgba(255,255,255,.68)!important;border:1px solid white!important;border-radius:100px!important;white-space:nowrap;font-weight:750}
+html.ild-aurora .aurora-headline{margin:clamp(13px,2.15vh,27px) 5px 12px;display:flex;align-items:end;justify-content:space-between;gap:12px}
+html.ild-aurora .aurora-eyebrow{font-size:clamp(10px,1.05vw,15px);letter-spacing:2px;color:#f5ebff;font-weight:850;text-shadow:0 2px 7px #3b297c75}
+html.ild-aurora .aurora-headline h2{margin-top:1px;color:#fff!important;text-shadow:0 2px 14px #38216e75;font-size:clamp(25px,3vw,44px)!important;font-weight:830;letter-spacing:-1.1px}
+html.ild-aurora .aurora-all{background:rgba(255,255,255,.8)!important;color:#7150a6!important;border:1px solid #fff!important;border-radius:100px!important;font-size:clamp(13px,1.25vw,19px)!important;font-weight:800;min-height:44px;padding:8px 19px}
+html.ild-aurora .aurora-routes{display:flex;gap:clamp(11px,1.4vw,24px);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;padding:1px 3px 12px}
+html.ild-aurora .aurora-course{display:grid;grid-template-columns:44% minmax(0,1fr);flex:0 0 min(49%,640px);min-width:295px;min-height:clamp(155px,26vh,255px);border-radius:27px;overflow:hidden;border:1px solid rgba(255,255,255,.92);background:linear-gradient(135deg,rgba(255,248,255,.89),rgba(252,233,248,.77))!important;box-shadow:0 10px 29px rgba(52,36,95,.21);backdrop-filter:blur(14px);scroll-snap-align:start;cursor:pointer}
+html.ild-aurora .aurora-course:hover{transform:translateY(-2px)}
+html.ild-aurora .aurora-course-img{position:relative;background-position:center;background-size:cover;min-height:150px}
+html.ild-aurora .aurora-place{position:absolute;top:13px;left:13px;border-radius:100px;background:rgba(245,224,255,.94);border:1px solid white;color:#7a4ab0;padding:5px 12px;font-size:clamp(12px,1.2vw,17px);font-weight:800}
+html.ild-aurora .aurora-course-info{display:flex;flex-direction:column;padding:clamp(13px,1.55vw,23px);min-width:0;gap:8px}
+html.ild-aurora .aurora-kicker{font-size:clamp(9px,.82vw,13px);letter-spacing:1.6px;font-weight:800;color:#a18bb7}
+html.ild-aurora .aurora-course h3{color:#3c3056;font-size:clamp(20px,2vw,29px)!important;font-weight:830;line-height:1.25;letter-spacing:-.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.ild-aurora .aurora-course p{font-size:clamp(13px,1.2vw,18px);color:#675e75;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.ild-aurora .aurora-course-bottom{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-top:auto;font-size:clamp(13px,1.1vw,17px);color:#867995}
+html.ild-aurora .aurora-see{border-radius:100px;padding:7px 15px;background:rgba(250,239,255,.95);color:#6d3fbb;white-space:nowrap;font-size:clamp(12px,1.13vw,17px);font-weight:800}
+html.ild-aurora .aurora-saved{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;min-height:57px;padding:10px 22px;border:1px solid #ffffffd9;border-radius:22px;background:rgba(255,250,255,.64)!important;backdrop-filter:blur(16px);font-size:clamp(15px,1.4vw,22px);color:#51436f;font-weight:750}
+html.ild-aurora .aurora-saved span:last-child{font-size:clamp(12px,1.2vw,17px);color:#755b9b}
+/* Every non-home screen uses the same translucent glass language, not only the hero. */
+html.ild-aurora .glass,html.ild-aurora .communitypanel,html.ild-aurora .placedetail,html.ild-aurora .mapsection,html.ild-aurora .routebottom{background:linear-gradient(132deg,rgba(255,255,255,.79),rgba(245,229,255,.67))!important;border:1px solid #ffffffdb!important;backdrop-filter:blur(20px);border-radius:25px!important;box-shadow:0 10px 35px #35256524!important;color:#433657}
+html.ild-aurora .sectionhead h1,html.ild-aurora .sectionhead h2{color:#fff;text-shadow:0 2px 14px #35246b65}
+html.ild-aurora .carousel .course{border-radius:24px!important;overflow:hidden}
+html.ild-aurora .carousel .cover{height:clamp(100px,22vh,210px)!important}
+html.ild-aurora .carousel .coursebody{padding:clamp(13px,1.7vw,22px)!important;gap:8px!important}
+html.ild-aurora .carousel .coursebody h3{color:#3e315b!important;font-size:clamp(20px,1.9vw,31px)!important}
+html.ild-aurora .carousel .routewords{color:#685f76!important;font-size:clamp(13px,1.3vw,19px)!important}
+html.ild-aurora .toolbar button.active,html.ild-aurora .stopchips button.active{background:linear-gradient(120deg,#8b79f0,#ae78e9)!important;color:white!important}
+html.ild-aurora .routebottom button.primary,html.ild-aurora .save-route-cta,html.ild-aurora .communitypanel button.primary{background:linear-gradient(120deg,#7a73eb,#b16dea)!important;border:1px solid #dac2ff!important;border-radius:20px!important;color:white!important;box-shadow:0 5px 17px #8053b748}
+html.ild-aurora .reviewbox,html.ild-aurora .resultcard,html.ild-aurora .single-candidate{background:rgba(255,255,255,.65)!important;border:1px solid #fff!important;border-radius:21px!important}
+html.ild-aurora .stopchips button,html.ild-aurora .insert-stop{background:rgba(255,255,255,.76)!important;color:#5e487d;border:1px solid white!important;border-radius:16px!important}
+html.ild-aurora .mapwrap{border:2px solid rgba(255,255,255,.9);box-shadow:0 4px 15px rgba(58,42,105,.15);border-radius:20px!important}
+/* Glass dialogs and navigation */
+html.ild-aurora dialog{color:#44375d!important;background:linear-gradient(135deg,rgba(245,234,255,.94),rgba(225,210,255,.93) 48%,rgba(248,214,232,.91))!important;border:1px solid #ffffffdb!important;border-radius:32px!important;box-shadow:0 25px 85px #24144780,inset 0 1px #fff;backdrop-filter:blur(25px);padding:clamp(17px,2.4vw,35px)!important;width:min(760px,93vw)}
+html.ild-aurora dialog::backdrop{background:rgba(27,24,62,.43)!important;backdrop-filter:blur(7px)}
+html.ild-aurora dialog .close{position:absolute;top:13px;right:15px;z-index:10;width:43px;height:43px;padding:0!important;min-height:43px;background:rgba(255,255,255,.55)!important;border:1px solid white!important;border-radius:100px;color:#72529b;font-size:24px}
+html.ild-aurora dialog button.primary{background:linear-gradient(105deg,#7773ed,#b56bf1)!important;border-color:#cfaff8!important;color:#fff!important;border-radius:100px!important;box-shadow:0 5px 19px #7454b54d}
+/* Chat screen is a different layout, not merely a tinted modal. */
+html.ild-aurora #modal.aurora-chat-modal{width:min(920px,94vw)!important;max-height:89vh!important;padding:clamp(20px,2.5vw,36px)!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat{width:100%!important;max-width:none!important;gap:12px!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-head{align-items:center;gap:15px;margin-bottom:4px}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-symbol{width:64px;height:64px;flex-shrink:0;display:grid;place-items:center;color:white!important;border:1px solid #ffffffc9;border-radius:22px;background:linear-gradient(125deg,#8888f2,#b473ec)!important;box-shadow:0 8px 20px #7651bd55;font-size:36px!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-head h2{font-size:clamp(26px,2.65vw,39px)!important;font-weight:800;color:#453267!important;margin:0!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-head p{font-size:clamp(14px,1.32vw,20px)!important;color:#736488!important;margin-top:4px}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-status{background:rgba(255,255,255,.35)!important;border:1px solid #ffffffa6!important;color:#806e93!important;border-radius:15px!important;font-size:clamp(11px,1vw,14px)!important;padding:7px 12px!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-messages{min-height:clamp(126px,26vh,290px)!important;max-height:37vh!important;gap:13px!important;padding:8px 4px!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-msg{max-width:78%!important;padding:12px 17px!important;border:1px solid #fff!important;border-radius:23px!important;background:rgba(255,255,255,.83)!important;box-shadow:0 4px 20px #69459918;color:#48375c!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-msg.mine{align-self:flex-end!important;background:linear-gradient(115deg,#8a80ed,#b778ef)!important;color:white!important;border-color:#d4baf9!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-msg p{font-size:clamp(16px,1.7vw,25px)!important;line-height:1.47!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-msg span{font-size:12px!important;opacity:.75}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-suggestions{gap:8px}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-suggestions button{font-size:clamp(13px,1.2vw,18px)!important;min-height:40px;padding:6px 16px!important;border-radius:100px;background:rgba(255,255,255,.62)!important;border:1px solid white!important;color:#6e4c94!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-compose{background:rgba(255,255,255,.70);border:1px solid white;border-radius:100px;padding:6px;gap:8px;align-items:center;box-shadow:0 6px 21px #6c419422}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-compose input{border:0!important;background:transparent!important;min-width:0;min-height:46px;font-size:clamp(14px,1.5vw,22px)!important;color:#49395f;box-shadow:none!important}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-compose button{border-radius:100px!important;min-height:48px;padding:8px 22px;font-size:clamp(14px,1.45vw,21px)!important;white-space:nowrap}
+html.ild-aurora #modal.aurora-chat-modal .gleo-chat-note{font-size:clamp(11px,1vw,15px)!important;color:#786b8e!important}
+/* Segmented Navi modal: 1/2 segment cards + large focused actions. Native handlers untouched. */
+html.ild-aurora #modal.aurora-nav-modal{width:min(760px,92vw)!important;text-align:center}
+html.ild-aurora #modal.aurora-nav-modal:before{content:'⌁';display:grid;place-items:center;margin:3px auto 13px;width:62px;height:62px;border-radius:23px;background:linear-gradient(135deg,#8c81f0,#b579ed);border:1px solid #ffffffc4;box-shadow:0 8px 19px #7950bb52;color:white;font-size:47px;line-height:1}
+html.ild-aurora .aurora-nav-title{font-size:clamp(29px,3vw,42px)!important;font-weight:830!important;color:#49346c!important;margin:6px 0 4px!important}
+html.ild-aurora .aurora-nav-desc{font-size:clamp(15px,1.55vw,23px)!important;color:#715b8b;margin:4px auto 13px;line-height:1.5}
+html.ild-aurora .aurora-nav-progress{display:inline-block!important;background:rgba(255,255,255,.67);border:1px solid #fff;border-radius:100px;padding:9px 20px;margin:5px auto 17px;font-size:clamp(15px,1.35vw,20px);font-weight:800;color:#744bc0}
+html.ild-aurora .aurora-nav-list{list-style:none!important;padding:0!important;margin:5px 0 16px!important;display:flex;flex-direction:column;gap:10px;text-align:left}
+html.ild-aurora .aurora-nav-list li{margin:0!important;line-height:1.5;padding:15px 18px 15px 64px;background:rgba(255,255,255,.52)!important;border:1px solid white;border-radius:20px;position:relative;font-size:clamp(15px,1.4vw,21px);color:#4c3b65}
+html.ild-aurora .aurora-nav-list li:before{content:attr(data-segment)'구간';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;color:#8067a6;background:#e9dcf6;border-radius:100px;padding:5px 8px;font-weight:800}
+html.ild-aurora .aurora-nav-list li.aurora-nav-current{background:linear-gradient(120deg,rgba(210,187,255,.83),rgba(235,211,255,.77))!important;border-color:#fff;box-shadow:0 4px 16px #7549aa26;color:#4f3276}
+html.ild-aurora .aurora-nav-list li.aurora-nav-current:before{background:#9359e5;color:white}
+html.ild-aurora #modal.aurora-nav-modal .aurora-technical{display:none!important}
+html.ild-aurora .aurora-nav-status{font-size:clamp(12px,1.15vw,17px);margin:12px 0;color:#785e90;line-height:1.4}
+html.ild-aurora #modal.aurora-nav-modal .row:has(#pleosDepart){display:grid!important;grid-template-columns:1fr 1fr;gap:10px!important}
+html.ild-aurora .aurora-nav-start,html.ild-aurora .aurora-nav-next{width:100%!important;min-height:57px!important;padding:9px 12px!important;border-radius:100px!important;font-size:clamp(15px,1.45vw,21px)!important;font-weight:800}
+html.ild-aurora .aurora-nav-next{background:rgba(255,255,255,.48)!important;border:1px solid white!important;color:#6b4b99!important}
+html.ild-aurora .aurora-nav-foot{font-size:clamp(12px,1.1vw,16px);color:#76668d;margin-top:16px}
+html.ild-aurora .aurora-debug{grid-column:1/-1;font-size:12px;text-align:left;color:#81708e}.aurora-debug summary{cursor:pointer}
+/* Compact Pleos landscape, as shown in screenshots approx. 700x470. */
+@media(max-width:920px){
+ html.ild-aurora .shell{padding:8px 11px!important}
+ html.ild-aurora header{min-height:45px;padding:5px 12px!important;margin-bottom:8px!important;border-radius:16px!important}
+ html.ild-aurora .brand{font-size:23px!important}
+ html.ild-aurora header nav button{font-size:12px!important;min-height:30px!important;padding:4px 10px!important}
+ html.ild-aurora .aurora-hero{min-height:185px;padding:18px!important;gap:15px!important;border-radius:21px!important}
+ html.ild-aurora .aurora-intro{font-size:8px;letter-spacing:1.5px}
+ html.ild-aurora .aurora-hero h1{font-size:clamp(26px,4vw,37px)!important;margin:7px 0!important;letter-spacing:-1px!important}
+ html.ild-aurora .aurora-hero-text>p{font-size:14px!important;line-height:1.36!important}
+ html.ild-aurora .aurora-gleo{margin-top:12px;min-height:38px;padding:4px 12px 4px 4px;font-size:13px!important;gap:6px}
+ html.ild-aurora .aurora-gleo-orb{width:30px;height:30px;font-size:16px}
+ html.ild-aurora .aurora-search-card{border-radius:17px;padding:13px!important}
+ html.ild-aurora .aurora-sparkline{font-size:22px}
+ html.ild-aurora .aurora-search-title{font-size:19px;margin:0}
+ html.ild-aurora .aurora-search-sub{font-size:11px;margin-bottom:9px}
+ html.ild-aurora .aurora-search-form{gap:4px;padding:3px}
+ html.ild-aurora .aurora-search-form>span{font-size:21px;margin:0 2px 0 5px}
+ html.ild-aurora .aurora-search-form input{font-size:11px!important;min-height:32px!important}
+ html.ild-aurora .aurora-search-form button{font-size:11px!important;min-height:33px!important;padding:5px 9px!important}
+ html.ild-aurora .aurora-tags{margin-top:10px;gap:5px}
+ html.ild-aurora .aurora-tags button{font-size:10px!important;min-height:27px!important;padding:4px 7px!important}
+ html.ild-aurora .aurora-headline{margin:10px 4px 8px}
+ html.ild-aurora .aurora-headline h2{font-size:23px!important}
+ html.ild-aurora .aurora-eyebrow{font-size:8px}
+ html.ild-aurora .aurora-all{font-size:11px!important;padding:5px 12px;min-height:30px}
+ html.ild-aurora .aurora-routes{gap:9px;padding-bottom:7px}
+ html.ild-aurora .aurora-course{min-width:260px;flex-basis:calc((100% - 10px)/2);min-height:147px;border-radius:18px}
+ html.ild-aurora .aurora-course-info{padding:10px;gap:4px}
+ html.ild-aurora .aurora-course h3{font-size:16px!important}
+ html.ild-aurora .aurora-course p{font-size:11px!important}
+ html.ild-aurora .aurora-kicker{font-size:8px}
+ html.ild-aurora .aurora-place{font-size:10px;padding:4px 8px;top:8px;left:8px}
+ html.ild-aurora .aurora-course-bottom{font-size:10px}
+ html.ild-aurora .aurora-see{font-size:11px;padding:5px 9px}
+ html.ild-aurora .aurora-saved{min-height:42px;border-radius:15px;font-size:12px;padding:7px 12px}
+ html.ild-aurora .aurora-saved span:last-child{font-size:10px}
+ html.ild-aurora #modal.aurora-chat-modal .gleo-chat-head h2{font-size:24px!important}
+ html.ild-aurora #modal.aurora-chat-modal .gleo-chat-head p{font-size:13px!important}
+ html.ild-aurora #modal.aurora-chat-modal .gleo-chat-symbol{width:45px;height:45px;font-size:25px!important;border-radius:16px}
+ html.ild-aurora #modal.aurora-chat-modal .gleo-msg p{font-size:15px!important}
+ html.ild-aurora #modal.aurora-chat-modal .gleo-chat-messages{min-height:115px!important;max-height:28vh!important}
+ html.ild-aurora #modal.aurora-nav-modal:before{width:48px;height:48px;font-size:31px;margin-bottom:5px}
+ html.ild-aurora #modal.aurora-nav-modal .aurora-nav-title{font-size:26px!important}
+ html.ild-aurora .aurora-nav-desc{font-size:13px!important}
+ html.ild-aurora .aurora-nav-list li{font-size:13px;padding:10px 10px 10px 62px}
+ html.ild-aurora .aurora-nav-progress{font-size:12px;margin-bottom:10px}
+ html.ild-aurora .aurora-nav-start,html.ild-aurora .aurora-nav-next{min-height:45px!important;font-size:12px!important}
+}
+@media(max-width:590px){html.ild-aurora .aurora-hero{grid-template-columns:1fr;gap:13px}html.ild-aurora .aurora-course{flex-basis:80%;min-width:245px}html.ild-aurora .aurora-hero-text>p br{display:none}html.ild-aurora header{gap:6px}html.ild-aurora header nav button{padding:4px 7px!important}}
+@media(prefers-reduced-motion:reduce){html.ild-aurora *{scroll-behavior:auto!important;transition:none!important}}
+/* Ensure dusk photography is actually visible above the body paint. */
+html.ild-aurora body .landscape{z-index:0!important;pointer-events:none}
+html.ild-aurora body .shell{position:relative;z-index:1}
+html.ild-aurora .landscape::before{filter:blur(5px) saturate(1.22)!important}
+html.ild-aurora .landscape::after{background:linear-gradient(120deg,rgba(97,101,198,.29),rgba(156,112,205,.18) 45%,rgba(234,148,179,.17)),linear-gradient(0deg,rgba(61,45,118,.17),transparent 70%)!important}

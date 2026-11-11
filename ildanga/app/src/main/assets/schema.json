@@ -1,0 +1,79 @@
+{
+  "packageName": "com.example.dateapp",
+  "appDescription": "A travel route planner for building, editing, and saving multi-stop driving itineraries in Korea.",
+  "invokeWord": "일단가",
+  "version": "1.0.0",
+  "actionCalls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "CREATE_TRAVEL_ROUTE",
+        "description": "Select an available multi-stop travel route for a requested Korean region.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "region": {
+              "type": "string",
+              "description": "The Korean city or travel region for the route."
+            }
+          },
+          "required": [
+            "region"
+          ]
+        },
+        "component": "activity"
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "EDIT_TRAVEL_ROUTE",
+        "description": "Edit the active travel route by reversing the order, swapping two stops, or removing one stop.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "type": "string",
+              "enum": [
+                "reverse",
+                "swap",
+                "remove"
+              ],
+              "description": "The route modification operation."
+            },
+            "first": {
+              "type": "number",
+              "description": "The 1-based stop number used for swap or remove."
+            },
+            "second": {
+              "type": "number",
+              "description": "The second 1-based stop number for swapping."
+            }
+          },
+          "required": [
+            "operation"
+          ]
+        },
+        "component": "activity"
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "SAVE_TRAVEL_ROUTE",
+        "description": "Save the active travel route to the user's local route collection.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Optional name for the saved travel route."
+            }
+          },
+          "required": []
+        },
+        "component": "activity"
+      }
+    }
+  ]
+}

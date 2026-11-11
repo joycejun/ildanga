@@ -1,0 +1,3 @@
+.free-chat-route-offer{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:6px 4px 12px;padding:12px 15px;border:1px solid rgba(255,255,255,.85);background:rgba(255,255,255,.55);border-radius:18px;color:#42335e;font-size:clamp(14px,1.35vw,18px)}
+.free-chat-route-offer>span{flex:1;min-width:180px}
+.free-chat-route-offer>button{background:linear-gradient(125deg,#7762db,#b47aea)!important;color:white!important;border:0!important;border-radius:16px!important;padding:10px 16px!important;min-height:44px!important;white-space:nowrap}

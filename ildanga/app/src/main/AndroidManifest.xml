@@ -1,7 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 <uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="pleos.car.permission.FUSED_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 <uses-feature android:name="android.hardware.type.automotive" android:required="false"/>
+<uses-permission android:name="pleos.car.permission.NAVI_ROUTE_SEARCH"/>
+<uses-permission android:name="pleos.car.permission.NAVI_CUSTOM_MAP"/>
+<queries><intent><action android:name="android.speech.RecognitionService"/></intent></queries>
 <application android:icon="@drawable/ic_ildanga" android:label="일단가" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false" android:usesCleartextTraffic="false">
-<activity android:name=".MainActivity"  android:resizeableActivity="true" android:exported="true">
+<uses-library android:name="android.car" android:required="false"/>
+<meta-data android:name="com.hmg.rotary.ROTARY_SUPPORTED" android:value="false"/>
+<activity android:name=".MainActivity"  android:resizeableActivity="true" android:exported="true" android:launchMode="singleTop">
 <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.CAR_LAUNCHER"/></intent-filter>
+
+<intent-filter>
+ <action android:name="CREATE_TRAVEL_ROUTE"/>
+ <action android:name="EDIT_TRAVEL_ROUTE"/>
+ <action android:name="SAVE_TRAVEL_ROUTE"/>
+ <category android:name="android.intent.category.DEFAULT"/>
+</intent-filter>
 </activity></application></manifest>

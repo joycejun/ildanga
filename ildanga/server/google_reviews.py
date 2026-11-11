@@ -36,6 +36,34 @@ def normalize_place_id(place_id):
     return place_id
 
 
+def _review_summary(rs):
+    """Google AI review summary (only returned for supported places/languages). Attribution fields are required when shown."""
+    if not isinstance(rs, dict):
+        return None
+    text = (rs.get("text") or {}).get("text")
+    if not text:
+        return None
+    return {
+        "text": str(text)[:1000],
+        "disclosure": (rs.get("disclosureText") or {}).get("text") or "Summarized with Gemini",
+        "reviewsUri": rs.get("reviewsUri"),
+        "flagContentUri": rs.get("flagContentUri")
+    }
+
+
+def _phone(v):
+    v = str(v or "").strip()
+    return v if re.fullmatch(r"[0-9+\-\s()]{6,24}", v) else None
+
+
+def _hours(h):
+    """공식 운영시간(Google Maps 등록 정보): 요일별 문장 목록 (월요일부터)."""
+    if not isinstance(h, dict):
+        return None
+    days = [str(x)[:80] for x in (h.get("weekdayDescriptions") or []) if isinstance(x, str)][:7]
+    return {"weekdayDescriptions": days} if days else None
+
+
 def get_google_reviews(place_id):
     place_id = normalize_place_id(place_id)
 
@@ -47,7 +75,9 @@ def get_google_reviews(place_id):
 
     headers = api_headers(
         "displayName,rating,userRatingCount,"
-        "reviews,googleMapsUri,attributions"
+        "reviews,googleMapsUri,attributions,"
+        "reviewSummary,regularOpeningHours,"
+        "nationalPhoneNumber,internationalPhoneNumber"
     )
 
     req = urllib.request.Request(url, headers=headers)
@@ -63,7 +93,11 @@ def get_google_reviews(place_id):
         "ratingCount": data.get("userRatingCount"),
         "reviews": data.get("reviews", [])[:5],
         "sourceUrl": data.get("googleMapsUri"),
-        "attributions": data.get("attributions", [])
+        "attributions": data.get("attributions", []),
+        "reviewSummary": _review_summary(data.get("reviewSummary")),
+        "hours": _hours(data.get("regularOpeningHours")),
+        "phone": _phone(data.get("nationalPhoneNumber")),
+        "phoneIntl": _phone(data.get("internationalPhoneNumber"))
     }
 
 

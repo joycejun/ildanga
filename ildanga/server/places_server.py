@@ -212,6 +212,18 @@ class Handler(BaseHTTPRequestHandler):
         # -----------------------------
         # 서버 상태 확인
         # -----------------------------
+        if path == "/api/ai/chat":
+            try:
+                from chat_service import handle_chat
+                result = handle_chat(params)
+                return self.send_json(200, result)
+            except ValueError as e:
+                return self.send_json(400, {"error": str(e)})
+            except RuntimeError as e:
+                return self.send_json(503, {"error": str(e)})
+            except Exception:
+                return self.send_json(503, {"error": "AI 서버 처리 중 오류가 발생했어요."})
+
 
         if path == "/api/health":
 
@@ -228,6 +240,25 @@ class Handler(BaseHTTPRequestHandler):
                 ),
                 "googleReviewsVersion": 1,
             })
+
+        # -----------------------------
+        # 한국관광공사 TourAPI 여행코스 및 테마
+        # -----------------------------
+        if path.startswith("/api/tour/"):
+            try:
+                from tourapi_service import courses, course_details, match_stops, photo as tour_photo, TourError
+                from unified_search import discover
+                if path == "/api/tour/discover": data = discover(params, kakao_key)
+                elif path == "/api/tour/courses": data = courses(params)
+                elif path == "/api/tour/course": data = course_details(params)
+                elif path == "/api/tour/import": data = match_stops(params, kakao_key)
+                elif path == "/api/tour/photo": data = tour_photo(params)
+                else: return self.send_json(404, {"error":"지원하지 않는 관광코스 요청입니다."})
+                return self.send_json(200, data)
+            except TourError as e:
+                return self.send_json(503, {"error":str(e)})
+            except Exception:
+                return self.send_json(502, {"error":"관광공사 코스 조회에 실패했어요. 서비스 상태를 확인해 주세요."})
 
         # -----------------------------
         # 기존 네이버 리뷰 기능
@@ -269,6 +300,19 @@ class Handler(BaseHTTPRequestHandler):
         # -----------------------------
         # Google 리뷰 조회
         # -----------------------------
+
+        if path == "/api/google/summary":
+            try:
+                from google_summary import summarize, SummaryError
+                return self.send_json(200, summarize(params))
+            except SummaryError as e:
+                return self.send_json(503, {"error": str(e)})
+            except (ValueError, TypeError):
+                return self.send_json(400, {"error": "매장 정보를 확인해 주세요."})
+            except RuntimeError:
+                return self.send_json(503, {"error": "Google API 키를 확인해 주세요."})
+            except Exception:
+                return self.send_json(502, {"error": "후기 요약에 실패했어요."})
 
         if path == "/api/google/reviews":
 
