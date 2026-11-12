@@ -509,8 +509,23 @@ public class MainActivity extends Activity {
   // 팝업 닫기 → 홈으로 → (이미 홈이면) 앱을 종료하지 않고 뒤로 숨김 (CCP Back 하드키 가이드)
   web.evaluateJavascript(
           "(function(){try{return window.g3BackHandled?window.g3BackHandled():(window.backToHome(),true)}catch(e){return false}})()",
-          value -> { if (!"true".equals(value)) moveTaskToBack(true); }
+          value -> { Log.i("ILDANGA_BACK", "ILDANGA_BACK_LOG js=" + value); if (!"true".equals(value)) hideToHome(); }
   );
+ }
+
+ // ILDANGA_BACK_HOME: 앱을 종료하지 않고 숨김. moveTaskToBack 으로 화면이 안 바뀌면 홈(런처)으로 이동.
+ private void hideToHome() {
+  try { moveTaskToBack(true); Log.i("ILDANGA_BACK", "moveTaskToBack 호출"); } catch (Throwable t) { Log.w("ILDANGA_BACK", "moveTaskToBack 실패: " + t); }
+  new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+   try {
+    Log.i("ILDANGA_BACK", "0.4초 후 focus=" + hasWindowFocus() + " finishing=" + isFinishing());
+    if (isFinishing() || !hasWindowFocus()) return;   // 이미 숨겨졌으면 할 일 없음
+    Intent home = new Intent(Intent.ACTION_MAIN);
+    home.addCategory(Intent.CATEGORY_HOME);
+    home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(home);
+   } catch (Throwable t) { Log.w("ILDANGA_BACK", "홈 이동 실패: " + t); }
+  }, 400);
  }
 
  private void pushDriving(boolean restricted) {
