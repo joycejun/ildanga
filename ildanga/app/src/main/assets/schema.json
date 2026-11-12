@@ -28,7 +28,7 @@
       "type": "function",
       "function": {
         "name": "EDIT_TRAVEL_ROUTE",
-        "description": "Edit the active travel route by reversing the order, swapping two stops, or removing one stop.",
+        "description": "Edit the active travel route by reversing the order, swapping two stops, removing one stop, or adding a nearby place of a requested kind (walk, cafe, restaurant, etc.).",
         "parameters": {
           "type": "object",
           "properties": {
@@ -37,17 +37,33 @@
               "enum": [
                 "reverse",
                 "swap",
-                "remove"
+                "remove",
+                "add_nearby"
               ],
               "description": "The route modification operation."
             },
             "first": {
               "type": "number",
-              "description": "The 1-based stop number used for swap or remove."
+              "description": "The 1-based stop number used for swap or remove. For add_nearby, the new place is inserted after this stop (default: the last stop)."
             },
             "second": {
               "type": "number",
               "description": "The second 1-based stop number for swapping."
+            },
+            "category": {
+              "type": "string",
+              "enum": [
+                "산책",
+                "카페",
+                "맛집",
+                "빵집",
+                "전시",
+                "야경",
+                "바다",
+                "명소",
+                "드라이브"
+              ],
+              "description": "For add_nearby: the kind of place to add near the route. 산책=walk/park, 카페=cafe, 맛집=restaurant, 빵집=bakery, 전시=exhibition, 야경=night view, 바다=sea, 명소=sights, 드라이브=drive."
             }
           },
           "required": [

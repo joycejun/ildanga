@@ -1480,6 +1480,48 @@
     return false;
   };
 
+  /* ---------- Gleo: 근처 장소 추가 (EDIT_TRAVEL_ROUTE operation = add_nearby) ----------
+   * "근처에 산책할 곳 넣어 줘" -> {operation:'add_nearby', category:'산책', first:<이 번호 장소 뒤에 넣기(생략하면 마지막)>}
+   * 앱에 들어 있는 장소 중 기준 장소에서 가장 가까운 같은 종류를 찾아 끼워 넣어요. (서버 불필요)  */
+  const NEAR_CAT = { '산책': ['산책', '자연'], '공원': ['산책', '자연'], '카페': ['카페'], '맛집': ['맛집'], '식당': ['맛집'], '밥집': ['맛집'], '빵집': ['빵집'], '전시': ['전시'], '야경': ['야경'], '바다': ['바다'], '명소': ['명소', '역사'], '드라이브': ['드라이브'] };
+  const NEAR_MAX_M = 25000, ROUTE_MAX = 12;
+  function gleoAddNearby(p) {
+    const J = o => JSON.stringify(o);
+    const route = state.route;
+    if (!Array.isArray(route) || route.length < 1) return J({ status: 'fail', message: 'There is no editable travel route.' });
+    if (route.length >= ROUTE_MAX) return J({ status: 'fail', message: 'The route already has the maximum number of stops.' });
+    const cat = String(p.category || '').trim();
+    const cats = NEAR_CAT[cat];
+    if (!cats) return J({ status: 'asking', message: 'Which kind of place should be added? (walk, cafe, restaurant, bakery, exhibition, night view, sea, sights, drive)' });
+    let after = Number(p.first);
+    if (!Number.isInteger(after) || after < 1 || after > route.length) after = route.length;
+    const ref = places[route[after - 1]];
+    if (!ref || !Number.isFinite(Number(ref.lat)) || !Number.isFinite(Number(ref.lng))) return J({ status: 'fail', message: 'The reference stop has no location.' });
+    const at = { lat: Number(ref.lat), lng: Number(ref.lng) };
+    const best = Object.entries(places)
+      .filter(([k, pl]) => !route.includes(k) && pl && cats.includes(pl.cat) && Number.isFinite(Number(pl.lat)) && Number.isFinite(Number(pl.lng)))
+      .map(([k, pl]) => ({ k, pl, d: hav(at, { lat: Number(pl.lat), lng: Number(pl.lng) }) }))
+      .filter(o => o.d <= NEAR_MAX_M).sort((a, b) => (/예시/.test(a.pl.name) - /예시/.test(b.pl.name)) || a.d - b.d)[0];   // '예시' 이름의 임시 장소는 뒤로
+    if (!best) return J({ status: 'fail', message: 'No nearby place of that kind was found.' });
+    const next = [...route]; next.splice(after, 0, best.k);
+    state.route = next; persist();
+    try { const m = $('#modal'); if (m && m.open) m.close(); } catch (e) {}
+    go('route');
+    try { toast(`근처 ${cat} 장소를 추가했어요: ${best.pl.name} (${fmtKm(best.d)})`); } catch (e) {}
+    return J({ status: 'success', message: 'Added ' + best.pl.name + ' after stop ' + after + '.' });
+  }
+  (function wrapGleo() {
+    const orig = window.ildangaGleoDispatch;
+    if (typeof orig !== 'function' || orig.__g3near) return;
+    const w = function (action, raw) {
+      try {
+        if (action === 'EDIT_TRAVEL_ROUTE') { const p = JSON.parse(raw || '{}'); if (p && p.operation === 'add_nearby') return gleoAddNearby(p); }
+      } catch (e) { return JSON.stringify({ status: 'fail', message: 'The travel request could not be processed.' }); }
+      return orig.apply(this, arguments);
+    };
+    w.__g3near = true; window.ildangaGleoDispatch = w;
+  })();
+
   /* ---------- install ---------- */
   const prevGo = window.go;
   if (typeof prevGo === 'function') {
